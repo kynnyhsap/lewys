@@ -2,14 +2,16 @@
   "name": "lewy",
   "version": "0.0.1",
   "description": "Fetch based http client",
-  "main": "dist/index.js",
+  "main": "dist/lewy.js",
   "repository": "https://github.com/kwoosh/lewy.git",
   "author": "kwoosh <tobirawork@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "webpack",
-    "dev": "webpack-dev-server --config ./config/webpack.config.dev.js"
+    "dev": "webpack-dev-server --config ./config/webpack.config.dev.js",
+    "build": "npm run bundle && npm run bundle:min",
+    "bundle": "webpack --config ./config/webpack.config.prod.js",
+    "bundle:min": "webpack --env.min --config ./config/webpack.config.prod.js"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -18,6 +20,7 @@
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.6",
     "html-webpack-plugin": "^2.30.1",
+    "uglifyjs-webpack-plugin": "^1.1.5",
     "vue": "^2.5.13",
     "vue-loader": "^13.6.1",
     "vue-style-loader": "^3.0.3",
