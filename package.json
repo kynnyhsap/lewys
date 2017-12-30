@@ -1,0 +1,10 @@
+{
+  "name": "lewy",
+  "version": "0.0.1",
+  "description": "Fetch based http client",
+  "main": "dist/index.js",
+  "repository": "https://github.com/kwoosh/lewy.git",
+  "author": "kwoosh <tobirawork@gmail.com>",
+  "license": "MIT",
+  "private": false
+}
