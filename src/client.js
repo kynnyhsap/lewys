@@ -15,13 +15,11 @@ export default class Client {
             params.body = body
         }
 
-        //#region logs
-        console.log('options', options)
-        console.log('params', params)
-        //#endregion logs
+        const request = this.intercept('req', new Request(url, params))
 
-        return fetch(url, params)
-            .then(this.status)
+        return fetch(request)
+            .then(this.status)    
+            .then(res => this.intercept('res', res))
     }
 
     status (res) {
@@ -29,6 +27,14 @@ export default class Client {
             return Promise.resolve(res)
         } else {
             return Promise.reject(new Error(res.statusText))
+        }
+    }
+
+    intercept (name, obj) {
+        if (typeof this.defaults.intercept[name] === 'function') {
+            return this.defaults.intercept[name](obj)
+        } else {
+            return obj
         }
     }
 }
