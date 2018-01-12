@@ -4,21 +4,23 @@ export default class Client {
     }
 
     request (options) {
-        const params = {}
-        let { url, method, body } = options
+        let { url, method, body, params } = options
+        const init = {}
         
+        url = this.defaults.baseURL + url
         method = method.toUpperCase()
-        params.method = method
-        url = `${this.defaults.baseURL}${url}`
+        init.method = method
 
-        if (body && (method !== 'GET' || method !== 'HEAD' || method !== 'DELETE')) {
-            params.body = body
+        if (method === 'GET' || method === 'HEAD') {
+            if (params) url = `${url}?${JSON.stringify(params)}`
+        } else {
+            init.body = body
         }
 
-        const request = this.intercept('req', new Request(url, params))
+        const request = this.intercept('req', new Request(url, init))
 
         return fetch(request)
-            .then(this.status)    
+            .then(this.status)
             .then(res => this.intercept('res', res))
     }
 
