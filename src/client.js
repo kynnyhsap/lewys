@@ -32,17 +32,32 @@ class Client {
         REQUEST_OPTIONS.cache = redirect || this.defaults.cache
         REQUEST_OPTIONS.mode = mode || this.defaults.mode
         REQUEST_OPTIONS.headers = new Headers(headers || this.defaults.headers)
-        
+
         if (this.hasBody(method)) REQUEST_OPTIONS.body = body
 
-        console.log(REQUEST_OPTIONS)
-
-        // TODO: Improve Request interceptor
-        const request = this.intercept('req', new Request(URL, REQUEST_OPTIONS))
+        const requestConfig = { url: URL, options: REQUEST_OPTIONS }
+        const request = this.interceptRequest(requestConfig)
 
         return fetch(request)
             .then(this.checkStatus)
-            .then(response => this.intercept('res', response))
+            .then(response => this.interceptResponse(response))
+    }
+    
+    interceptRequest (config) {
+        if (typeof this.defaults.intercept.req === 'function') {
+            const result = this.defaults.intercept.req(config)
+            return new Request(result.url, result.options)
+        } else {
+            return new Request(config.url, config.options)
+        }
+    }
+
+    interceptResponse (config) {
+        if (typeof this.defaults.intercept.res === 'function') {
+            return this.defaults.intercept.res(config)
+        } else {
+            return config
+        }
     }
 
     hasBody (method) {
@@ -55,14 +70,6 @@ class Client {
             return Promise.resolve(res)
         } else {
             return Promise.reject(new Error(res.statusText))
-        }
-    }
-
-    intercept (name, obj) {
-        if (typeof this.defaults.intercept[name] === 'function') {
-            return this.defaults.intercept[name](obj)
-        } else {
-            return obj
         }
     }
 
