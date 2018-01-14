@@ -1,8 +1,10 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 
+const dir = 'server' 
+
 const devConfig = {
-    entry: './examples/main.js',
+    entry: `./${dir}/main.js`,
 
     output: {
         path: path.join(__dirname, 'dist'),
@@ -11,12 +13,12 @@ const devConfig = {
 
     plugins: [
         new HtmlWebpackPlugin({
-            template: './examples/index.html'
+            template: `./${dir}/index.html`
         })
     ],
 
     devServer: {
-        contentBase: path.join(__dirname, 'examples'),
+        contentBase: path.join(__dirname, dir),
         port: 1488,
         open: true,
         noInfo: true,
