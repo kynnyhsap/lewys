@@ -2,43 +2,33 @@ class Client {
     constructor (settings) {
         this.defaults = settings
 
-        if (!this.defaults.mode) this.defaults.mode = 'cors'
         if (!this.defaults.credentials) this.defaults.credentials = 'omit'
         if (!this.defaults.redirect) this.defaults.redirect = 'follow'
+        if (!this.defaults.timeout) this.defaults.timeout = 30000
         if (!this.defaults.cache) this.defaults.cache = 'default'
-
-        // console.log(this.defaults)
+        if (!this.defaults.mode) this.defaults.mode = 'cors'
     }
 
     request (options) {
-        let {
-            credentials,
-            url,
-            method,
-            body,
-            params,
-            headers,
-            mode,
-            redirect,
-            cache
-        } = options
+        let { url, method, body, params, headers } = options
+        let { credentials, mode, redirect, cache } = options
 
         const REQUEST_OPTIONS = {}
         const URL = this.normalizeURL(url, params)
         
         REQUEST_OPTIONS.credentials = credentials || this.defaults.credentials
         REQUEST_OPTIONS.redirect = redirect || this.defaults.redirect
-        REQUEST_OPTIONS.method = method
-        REQUEST_OPTIONS.cache = redirect || this.defaults.cache
-        REQUEST_OPTIONS.mode = mode || this.defaults.mode
         REQUEST_OPTIONS.headers = new Headers(headers || this.defaults.headers)
+        REQUEST_OPTIONS.cache = cache || this.defaults.cache
+        REQUEST_OPTIONS.mode = mode || this.defaults.mode
+        REQUEST_OPTIONS.method = method
 
         if (this.hasBody(method)) REQUEST_OPTIONS.body = body
 
         const requestConfig = { url: URL, options: REQUEST_OPTIONS }
         const request = this.interceptRequest(requestConfig)
 
-        return fetch(request)
+        return this.startTimeout(fetch(request))
             .then(this.checkStatus)
             .then(response => this.interceptResponse(response))
     }
@@ -78,6 +68,18 @@ class Client {
         if (params) url = url + '?' + JSON.stringify(params)
 
         return  url
+    }
+
+    startTimeout (promise) {
+        const timeout = Number(this.defaults.timeout)
+
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                reject('Time is out!!')
+            }, timeout)
+
+            promise.then(resolve, reject)
+        })
     }
 }
 
