@@ -14,7 +14,7 @@ class Client {
         let { credentials, mode, redirect, cache } = options
 
         const REQUEST_OPTIONS = {}
-        const URL = this.normalizeURL(url, params)
+        const URL = this.normalizeURL(this.defaults.baseURL, url, params)
         
         REQUEST_OPTIONS.credentials = credentials || this.defaults.credentials
         REQUEST_OPTIONS.redirect = redirect || this.defaults.redirect
@@ -25,26 +25,26 @@ class Client {
 
         if (this.hasBody(method)) REQUEST_OPTIONS.body = body
 
-        const requestConfig = { url: URL, options: REQUEST_OPTIONS }
-        const request = this.interceptRequest(requestConfig)
+        const request = this.requestHook({ url: URL, options: REQUEST_OPTIONS })
 
-        return this.startTimeout(fetch(request))
+        return this
+            .startTimeout(fetch(request), this.defaults.timeout)
             .then(this.checkStatus)
-            .then(response => this.interceptResponse(response))
+            .then(response => this.responseHook(response))
     }
     
-    interceptRequest (config) {
-        if (typeof this.defaults.intercept.req === 'function') {
-            const result = this.defaults.intercept.req(config)
+    requestHook (config) {
+        if (typeof this.defaults.beforeRequest === 'function') {
+            const result = this.defaults.beforeRequest(config)
             return new Request(result.url, result.options)
         } else {
             return new Request(config.url, config.options)
         }
     }
 
-    interceptResponse (config) {
-        if (typeof this.defaults.intercept.res === 'function') {
-            return this.defaults.intercept.res(config)
+    responseHook (config) {
+        if (typeof this.defaults.beforeResponse === 'function') {
+            return this.defaults.beforeResponse(config)
         } else {
             return config
         }
@@ -63,15 +63,15 @@ class Client {
         }
     }
 
-    normalizeURL (relativeURL, params) {
-        let url = this.defaults.baseURL + relativeURL
+    normalizeURL (baseURL, relativeURL, params) {
+        let url = baseURL + relativeURL
         if (params) url = url + '?' + JSON.stringify(params)
 
         return  url
     }
 
-    startTimeout (promise) {
-        const timeout = Number(this.defaults.timeout)
+    startTimeout (promise, timeout) {
+        timeout = Number(timeout)
 
         return new Promise((resolve, reject) => {
             setTimeout(() => {
