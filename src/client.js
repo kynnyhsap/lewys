@@ -12,18 +12,16 @@ class Client {
     request (options) {
         let { url, method, body, params, headers } = options
         let { credentials, mode, redirect, cache } = options
-
         const REQUEST_OPTIONS = {}
-        const URL = this.normalizeURL(this.defaults.baseURL, url, params)
+        const URL = this.normalizeURL(url, params)
         
+        if (this.hasBody(method)) REQUEST_OPTIONS.body = body
         REQUEST_OPTIONS.credentials = credentials || this.defaults.credentials
         REQUEST_OPTIONS.redirect = redirect || this.defaults.redirect
         REQUEST_OPTIONS.headers = new Headers(headers || this.defaults.headers)
         REQUEST_OPTIONS.cache = cache || this.defaults.cache
         REQUEST_OPTIONS.mode = mode || this.defaults.mode
         REQUEST_OPTIONS.method = method
-
-        if (this.hasBody(method)) REQUEST_OPTIONS.body = body
 
         const request = this.requestHook({ url: URL, options: REQUEST_OPTIONS })
 
@@ -33,6 +31,14 @@ class Client {
             .then(response => this.responseHook(response))
     }
     
+    serialize (params) {
+        if (typeof this.defaults.paramSerializer === 'function') {
+            return this.defaults.paramSerializer(params)
+        } else {
+            return JSON.stringify(params)
+        }
+    }
+
     requestHook (config) {
         if (typeof this.defaults.beforeRequest === 'function') {
             const result = this.defaults.beforeRequest(config)
@@ -63,11 +69,12 @@ class Client {
         }
     }
 
-    normalizeURL (baseURL, relativeURL, params) {
-        let url = baseURL + relativeURL
-        if (params) url = url + '?' + JSON.stringify(params)
-
-        return  url
+    normalizeURL (relativeURL, params) {
+        if (params) {
+            return this.defaults.baseURL + relativeURL + '?' + this.serialize(params)
+        } else {
+            return this.defaults.baseURL + relativeURL
+        }
     }
 
     startTimeout (promise, timeout) {
