@@ -1,5 +1,5 @@
-import create from './create'
+import init from './init'
 
 export default {
-    create
+    init
 }
