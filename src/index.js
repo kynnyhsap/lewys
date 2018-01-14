@@ -1,5 +1,5 @@
-import init from './init'
+import Client from './client'
 
 export default {
-    init
+    init: (settings) => new Client(settings)
 }

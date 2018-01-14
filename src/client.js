@@ -1,3 +1,5 @@
+import utils from './utils'
+
 class Client {
     constructor (settings) {
         this.defaults = settings
@@ -10,12 +12,14 @@ class Client {
     }
 
     request (options) {
+        const REQUEST_OPTIONS = {}
         let { url, method, body, params, headers } = options
         let { credentials, mode, redirect, cache } = options
-        const REQUEST_OPTIONS = {}
-        const URL = this.normalizeURL(url, params)
+
+        const serializedParams = utils.serializer(params, this.defaults.paramSerializer)
+        const URL = utils.constructURL(this.defaults.baseURL, url, serializedParams)
         
-        if (this.hasBody(method)) REQUEST_OPTIONS.body = body
+        if (utils.hasBody(method)) REQUEST_OPTIONS.body = body
         REQUEST_OPTIONS.credentials = credentials || this.defaults.credentials
         REQUEST_OPTIONS.redirect = redirect || this.defaults.redirect
         REQUEST_OPTIONS.headers = new Headers(headers || this.defaults.headers)
@@ -23,70 +27,14 @@ class Client {
         REQUEST_OPTIONS.mode = mode || this.defaults.mode
         REQUEST_OPTIONS.method = method
 
-        const request = this.requestHook({ url: URL, options: REQUEST_OPTIONS })
+        const reqConf = { url: URL, options: REQUEST_OPTIONS }
+        const req = utils.requestHook(reqConf, this.defaults.beforeRequest)
+        const fetchPromice = fetch(req.url, req.options)
 
-        return this
-            .startTimeout(fetch(request), this.defaults.timeout)
-            .then(this.checkStatus)
-            .then(response => this.responseHook(response))
-    }
-    
-    serialize (params) {
-        if (typeof this.defaults.paramSerializer === 'function') {
-            return this.defaults.paramSerializer(params)
-        } else {
-            return JSON.stringify(params)
-        }
-    }
-
-    requestHook (config) {
-        if (typeof this.defaults.beforeRequest === 'function') {
-            const result = this.defaults.beforeRequest(config)
-            return new Request(result.url, result.options)
-        } else {
-            return new Request(config.url, config.options)
-        }
-    }
-
-    responseHook (config) {
-        if (typeof this.defaults.beforeResponse === 'function') {
-            return this.defaults.beforeResponse(config)
-        } else {
-            return config
-        }
-    }
-
-    hasBody (method) {
-        method = method.toUpperCase()
-        return (method === 'POST' || method === 'PUT' || method === 'PATCH')
-    }
-
-    checkStatus (res) {
-        if (res.status >= 200 && res.status < 300) {
-            return Promise.resolve(res)
-        } else {
-            return Promise.reject(new Error(res.statusText))
-        }
-    }
-
-    normalizeURL (relativeURL, params) {
-        if (params) {
-            return this.defaults.baseURL + relativeURL + '?' + this.serialize(params)
-        } else {
-            return this.defaults.baseURL + relativeURL
-        }
-    }
-
-    startTimeout (promise, timeout) {
-        timeout = Number(timeout)
-
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                reject('Time is out!!')
-            }, timeout)
-
-            promise.then(resolve, reject)
-        })
+        return utils
+            .startTimeout(fetchPromice, this.defaults.timeout)
+            .then(utils.checkStatus)
+            .then(response => utils.responseHook(response, this.defaults.beforeResponse))
     }
 }
 
