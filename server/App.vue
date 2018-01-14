@@ -9,12 +9,11 @@
 import lewy from '../src'
 
 const client = lewy.init({
-    baseURL: 'https://dog.ceo',
-    timeout: 1000,
+    baseURL: 'https://jsonplaceholder.typicode.com',
+    timeout: 10000,
 
     paramSerializer (params) {
-        console.log(params)
-        return params
+        return '221342'
     },
 
     beforeResponse (res) {
@@ -39,15 +38,10 @@ export default {
     methods: {
         getDogs () {
             client.request({
-                url: '/api/breeds/list/all',
+                url: '/posts/1',
                 method: 'get',
                 params: {
-                    lol: ['kek', 'cheburek'],
-                    azaza: {
-                        some: {
-                            some: 'some'
-                        }
-                    }
+                    lol: 'asdf'
                 }
             }).then(body => body)
         }
