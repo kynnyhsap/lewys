@@ -11,30 +11,35 @@ class Client {
         if (!this.defaults.mode) this.defaults.mode = 'cors'
     }
 
-    request (options) {
-        const REQUEST_OPTIONS = {}
-        let { url, method, body, params, headers } = options
-        let { credentials, mode, redirect, cache } = options
+    request (opts) {
+        const OPTIONS = {}
+        let { url, method, body, params, headers } = opts
+        let { credentials, mode, redirect, cache } = opts
 
         const serializedParams = utils.serializer(params, this.defaults.paramSerializer)
         const URL = utils.constructURL(this.defaults.baseURL, url, serializedParams)
 
-        if (utils.hasBody(method)) REQUEST_OPTIONS.body = body
-        REQUEST_OPTIONS.credentials = credentials || this.defaults.credentials
-        REQUEST_OPTIONS.redirect = redirect || this.defaults.redirect
-        REQUEST_OPTIONS.headers = new Headers(headers || this.defaults.headers)
-        REQUEST_OPTIONS.cache = cache || this.defaults.cache
-        REQUEST_OPTIONS.mode = mode || this.defaults.mode
-        REQUEST_OPTIONS.method = method
+        if (utils.hasBody(method)) OPTIONS.body = body
 
-        const reqConf = { url: URL, options: REQUEST_OPTIONS }
-        const req = utils.interceptRequest(reqConf, this.defaults.beforeRequest)
-        const fetchPromice = fetch(req.url, req.options)
+        OPTIONS.credentials = credentials || this.defaults.credentials
+        OPTIONS.redirect = redirect || this.defaults.redirect
+        OPTIONS.headers = new Headers(headers || this.defaults.headers)
+        OPTIONS.cache = cache || this.defaults.cache
+        OPTIONS.mode = mode || this.defaults.mode
+        OPTIONS.method = method
+
+        const request = utils.intercept(
+            new Request(URL, OPTIONS),
+            this.defaults.beforeRequest
+        )
 
         return utils
-            .startTimeout(fetchPromice, this.defaults.timeout)
+            .startTimeout(fetch(request), this.defaults.timeout)
             .then(utils.checkStatus)
-            .then(response => utils.interceptResponse(response, this.defaults.beforeResponse))
+            .then(response => utils.intercept(
+                response,
+                this.defaults.beforeResponse
+            ))
     }
 }
 
