@@ -1,18 +1,9 @@
 export default {
-    interceptRequest (config, fn) {
+    intercept (instance, fn) {
         if (typeof fn === 'function') {
-            const result = fn(config)
-            return new Request(result.url, result.options)
+            return fn(instance)
         } else {
-            return new Request(config.url, config.options)
-        }
-    },
-
-    interceptResponse (config, fn) {
-        if (typeof fn === 'function') {
-            return fn(config)
-        } else {
-            return config
+            return instance
         }
     },
 
@@ -50,12 +41,12 @@ export default {
         }
     },
 
-    startTimeout (promise, timeout) {
+    startTimeout (promise, timeout, message = 'Time is out!!') {
         timeout = Number(timeout)
     
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                reject('Time is out!!')
+                reject(message)
             }, timeout)
     
             promise.then(resolve, reject)
