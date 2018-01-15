@@ -1,5 +1,5 @@
 export default {
-    interceptResponse (config, fn) {
+    interceptRequest (config, fn) {
         if (typeof fn === 'function') {
             const result = fn(config)
             return new Request(result.url, result.options)
@@ -8,14 +8,14 @@ export default {
         }
     },
 
-    interceptRequest (config, fn) {
+    interceptResponse (config, fn) {
         if (typeof fn === 'function') {
             return fn(config)
         } else {
             return config
         }
     },
-    
+
     checkStatus (res) {
         if (res.status >= 200 && res.status < 300) {
             return Promise.resolve(res)
