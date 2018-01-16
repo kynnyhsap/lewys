@@ -16,11 +16,15 @@ export default {
     },
 
     constructURL (baseURL, relativeURL, params) {
-        if (params) {
-            return baseURL + relativeURL + '?' + params
-        } else {
-            return baseURL + relativeURL
-        }
+        const isFull = /(https?:\/\/)/ig
+        let url = ''
+
+        if (isFull.test(relativeURL)) url = relativeURL 
+        else url = baseURL + relativeURL
+
+        if (params) url += `?${params}`
+        console.log(url)
+        return url
     },
 
     hasBody (method) {
