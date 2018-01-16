@@ -83,6 +83,13 @@ describe('Utils', () => {
             expect(url).toBe('https://test.some/api/post/1')
             expect(urlWithParams).toBe('https://test.some/api/post/1?some=10')
         })
+
+        test('should ignore baseURL if relativeURL is fully', () => {
+            const baseURL = 'https://test.some'
+            const relativeURL = 'http://some.other/api'
+        
+            expect(utils.constructURL(baseURL, relativeURL)).toBe(relativeURL)
+        })
     })
 
     describe('hasBody', () => {
