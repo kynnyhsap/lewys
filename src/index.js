@@ -1,5 +1,7 @@
 import Client from './client'
 
-export default {
+const lewys = {
     init: (settings) => new Client(settings)
 }
+
+export default lewys
