@@ -38,7 +38,7 @@ export default {
         const isFull = /(https?:\/\/)/ig
         let url = ''
 
-        if (isFull.test(relativeURL)) url = relativeURL 
+        if (isFull.test(relativeURL)) url = relativeURL
         else url = baseURL + relativeURL
 
         if (params) url += `?${params}`
@@ -66,12 +66,12 @@ export default {
 
     startTimeout (promise, timeout, message = 'Time is out!!') {
         timeout = Number(timeout)
-    
+
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 reject(message)
             }, timeout)
-    
+
             promise.then(resolve, reject)
         })
     },

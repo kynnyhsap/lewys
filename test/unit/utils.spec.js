@@ -4,11 +4,11 @@ describe('Utils', () => {
     describe.skip('intercept', () => {
         const data = { lol: 'kek' }
         const interceptor = (obj) => obj.lol
-    
+
         it('should handle passed object', () => {
             expect(utils.intercept(data, interceptor)).toBe('kek')
         })
-    
+
         it('should return headled by default object', () => {
             expect(utils.intercept(data)).toBe(data)
         })
@@ -61,11 +61,11 @@ describe('Utils', () => {
     describe('paramsSerializer', () => {
         const params = { lol: 'kek' }
         const serializer = (params) => 'lol=kek'
-    
+
         it('should handle params by callback', () => {
             expect(utils.paramsSerializer(params, serializer)).toBe('lol=kek')
         })
-    
+
         it('should return stringified params', () => {
             expect(utils.paramsSerializer(params)).toBe(JSON.stringify(params))
         })
@@ -76,10 +76,10 @@ describe('Utils', () => {
             const baseURL = 'https://it.some'
             const relativeURL = '/api/post/1'
             const params = 'some=10'
-        
+
             const url = utils.constructURL(baseURL, relativeURL)
             const urlWithParams = utils.constructURL(baseURL, relativeURL, params)
-        
+
             expect(url).toBe('https://it.some/api/post/1')
             expect(urlWithParams).toBe('https://it.some/api/post/1?some=10')
         })
@@ -87,7 +87,7 @@ describe('Utils', () => {
         it('should ignore baseURL if relativeURL is fully', () => {
             const baseURL = 'https://it.some'
             const relativeURL = 'http://some.other/api'
-        
+
             expect(utils.constructURL(baseURL, relativeURL)).toBe(relativeURL)
         })
     })
@@ -98,7 +98,7 @@ describe('Utils', () => {
             const PUT = 'PUT'
             const PATCH = 'PATCH'
             const otherMethod = 'SOMEOTHER'
-    
+
             expect(utils.hasBody(POST)).toBeTruthy()
             expect(utils.hasBody(PUT)).toBeTruthy()
             expect(utils.hasBody(PATCH)).toBeTruthy()
