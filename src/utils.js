@@ -56,9 +56,9 @@ export default {
         )
     },
 
-    serializer (params, fn) {
-        if (typeof fn === 'function') {
-            return fn(params)
+    paramsSerializer (params, serilizer) {
+        if (typeof serilizer === 'function') {
+            return serilizer(params)
         } else {
             return JSON.stringify(params)
         }

@@ -16,7 +16,7 @@ class Client {
         let { url, method, body, params, headers } = opts
         let { credentials, mode, redirect, cache } = opts
 
-        const serializedParams = utils.serializer(params, this.defaults.paramSerializer)
+        const serializedParams = utils.paramsSerializer(params, this.defaults.serializer)
         const URL = utils.constructURL(this.defaults.baseURL, url, serializedParams)
 
         if (utils.hasBody(method)) OPTIONS.body = body
