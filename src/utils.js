@@ -1,10 +1,29 @@
 export default {
-    intercept (instance, fn) {
-        if (typeof fn === 'function') {
-            return fn(instance)
+    intercept (entity, interceptor) {
+        const isReq = (entity instanceof Request)
+
+        if (typeof interceptor === 'function') {
+            const result = interceptor(entity, this.getWritbleOptions(entity))
+
+            if (isReq && !(result instanceof Request)) {
+                throw new Error('[Error in beforeRequest]: returned value must be instance of Request')
+            }
+
+            return result
         } else {
-            return instance
+            return entity
         }
+    },
+
+    getWritbleOptions (object) {
+        const writble = {}
+
+        for (let key in object) {
+            if (typeof object[key] === 'function') continue
+            writble[key] = object[key]
+        }
+
+        return writble
     },
 
     checkStatus (res) {
@@ -23,7 +42,7 @@ export default {
         else url = baseURL + relativeURL
 
         if (params) url += `?${params}`
-        console.log(url)
+        // console.log(url)
         return url
     },
 
