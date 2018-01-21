@@ -1,12 +1,18 @@
 {
   "name": "lewys",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "description": "Fetch based client",
   "main": "dist/lewy.js",
   "repository": "https://github.com/kwoosh/lewy.git",
-  "author": "kwoosh <tobirawork@gmail.com> | Andrew Pashinnik",
+  "author": "kwoosh <tobirawork@gmail.com>",
   "license": "MIT",
   "private": false,
+  "keywords": [
+    "fetch",
+    "promise",
+    "https",
+    "http"
+  ],
   "scripts": {
     "dev": "webpack-dev-server --config ./config/webpack.config.dev.js",
     "build": "npm run bundle && npm run bundle:min",
