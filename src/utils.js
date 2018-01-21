@@ -1,10 +1,24 @@
 export default {
-    intercept (instance, fn) {
-        if (typeof fn === 'function') {
-            return fn(instance)
+    intercept (inst, interceptor) {
+        // const isReq = (inst instanceof Request)
+        // const isRes = (inst instanceof Response)
+
+        if (typeof interceptor === 'function') {
+            return interceptor(inst, this.getWritbleOptions(inst))
         } else {
-            return instance
+            return inst
         }
+    },
+
+    getWritbleOptions (object) {
+        const writble = {}
+
+        for (let key in object) {
+            if (typeof object[key] === 'function') continue
+            writble[key] = object[key]
+        }
+
+        return writble
     },
 
     checkStatus (res) {
@@ -23,7 +37,7 @@ export default {
         else url = baseURL + relativeURL
 
         if (params) url += `?${params}`
-        console.log(url)
+        // console.log(url)
         return url
     },
 
