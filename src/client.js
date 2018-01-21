@@ -35,7 +35,7 @@ class Client {
 
         return utils
             .startTimeout(fetch(request), this.defaults.timeout)
-            .then(utils.checkStatus)
+            .then(utils.handleStatus)
             .then(response => utils.intercept(
                 response,
                 this.defaults.beforeResponse

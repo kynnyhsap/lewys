@@ -26,7 +26,7 @@ export default {
         return writble
     },
 
-    checkStatus (res) {
+    handleStatus (res) {
         if (res.status >= 200 && res.status < 300) {
             return Promise.resolve(res)
         } else {
