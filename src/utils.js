@@ -1,12 +1,17 @@
 export default {
-    intercept (inst, interceptor) {
-        // const isReq = (inst instanceof Request)
-        // const isRes = (inst instanceof Response)
+    intercept (entity, interceptor) {
+        const isReq = (entity instanceof Request)
 
         if (typeof interceptor === 'function') {
-            return interceptor(inst, this.getWritbleOptions(inst))
+            const result = interceptor(entity, this.getWritbleOptions(entity))
+
+            if (isReq && !(result instanceof Request)) {
+                throw new Error('[Error in beforeRequest]: returned value must be instance of Request')
+            }
+
+            return result
         } else {
-            return inst
+            return entity
         }
     },
 
