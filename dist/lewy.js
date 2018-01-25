@@ -113,7 +113,7 @@ class Client {
         OPTIONS.headers = new Headers(headers || this.defaults.headers)
         OPTIONS.cache = cache || this.defaults.cache
         OPTIONS.mode = mode || this.defaults.mode
-        OPTIONS.method = method
+        OPTIONS.method = method || 'GET'
 
         const request = __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* default */].intercept(
             new Request(URL, OPTIONS),

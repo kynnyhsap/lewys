@@ -26,7 +26,7 @@ class Client {
         OPTIONS.headers = new Headers(headers || this.defaults.headers)
         OPTIONS.cache = cache || this.defaults.cache
         OPTIONS.mode = mode || this.defaults.mode
-        OPTIONS.method = method
+        OPTIONS.method = method || 'GET'
 
         const request = utils.intercept(
             new Request(URL, OPTIONS),
