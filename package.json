@@ -1,6 +1,6 @@
 {
   "name": "lewys",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Fetch based client",
   "main": "dist/lewy.js",
   "repository": "https://github.com/kwoosh/lewys.git",
