@@ -3,7 +3,7 @@ import lewys from '../src'
 const api = lewys.init({
     baseURL: 'https://jsonplaceholder.typicode.com',
 
-    timeout: 10000,
+    timeout: 100,
 
     // handleStatus(res) {
     //     cosole.log(res)
@@ -15,12 +15,12 @@ const api = lewys.init({
     // },
 
     beforeResponse (res, writble) {
-        console.log(res)
+        // console.log(res)
         return res.json().then(data => data)
     },
 
     beforeRequest (req, writble) {
-        console.log(req)
+        // console.log(req)
         return req
     },
 })

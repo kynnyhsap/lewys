@@ -38,6 +38,8 @@ export default {
                 console.log(body)
                 this.posts = body.slice(0, 20)
             })
+            .catch(err => console.error(err))
+
         },
 
         postPost () {
@@ -50,6 +52,8 @@ export default {
             }).then(body => {
                 console.log(body)
             })
+            .catch(err => console.error(err))
+
         }
     },
 

@@ -3,6 +3,7 @@ import utils from './utils'
 class Client {
     constructor (settings) {
         this.defaults = settings
+        this.controller = undefined
 
         if (!this.defaults.credentials) this.defaults.credentials = 'omit'
         if (!this.defaults.redirect) this.defaults.redirect = 'follow'
@@ -21,6 +22,11 @@ class Client {
 
         if (utils.hasBody(method)) OPTIONS.body = body
 
+        if ('AbortController' in window) {
+            this.controller = new AbortController()
+            OPTIONS.signal = this.controller.signal
+        }
+
         OPTIONS.credentials = credentials || this.defaults.credentials
         OPTIONS.redirect = redirect || this.defaults.redirect
         OPTIONS.headers = new Headers(headers || this.defaults.headers)
@@ -34,7 +40,11 @@ class Client {
         )
 
         return utils
-            .startTimeout(fetch(request), this.defaults.timeout)
+            .startTimeout(
+                fetch(request),
+                this.defaults.timeout,
+                this.controller
+            )
             .then(utils.handleStatus)
             .then(response => utils.intercept(
                 response,
