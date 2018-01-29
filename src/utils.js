@@ -1,3 +1,5 @@
+import textData from './textData'
+
 export default {
     intercept (entity, interceptor) {
         const isReq = (entity instanceof Request)
@@ -64,15 +66,23 @@ export default {
         }
     },
 
-    startTimeout (promise, timeout, message = 'Time is out!!') {
+    startTimeout (promise, timeout, controller) {
         timeout = Number(timeout)
 
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                reject(message)
+                const error = new Error()
+
+                error.name = 'AbortError'
+                error.message = textData.errorMesssageOnAbort
+
+                if (controller) controller.abort()
+                else error.message = textData.errorMesssageOnTimeout
+
+                reject(error)
             }, timeout)
 
             promise.then(resolve, reject)
         })
-    },
+    }
 }
