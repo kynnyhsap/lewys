@@ -2,17 +2,30 @@ const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 function generateConfig (options) {
-    const fileName = options.min ?  'lewy.min.js' : 'lewy.js'
+    const fileName = options.min ? 'lewy.min.js' : 'lewy.js'
 
     const config = {
         entry: './src/index.js',
-    
+
         output: {
             path: path.join(__dirname, '../dist'),
             filename: fileName
         },
 
-        plugins: []
+        plugins: [],
+
+        module: {
+            rules: [
+                {
+                    test: /\.js$/,
+                    use: [
+                        'babel-loader',
+                        'eslint-loader'
+                    ],
+                    exclude: /node_modules/
+                },
+            ]
+        }
     }
 
     if (options.min) {
@@ -32,6 +45,3 @@ if (process.argv[2] === '--env.min') {
 } else {
     module.exports = prodConfig
 }
-
-
-
