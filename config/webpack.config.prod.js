@@ -2,7 +2,7 @@ const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 function generateConfig (options) {
-    const fileName = options.min ? 'lewy.min.js' : 'lewy.js'
+    const fileName = options.min ? 'lewys.min.js' : 'lewys.js'
 
     const config = {
         entry: './src/index.js',
