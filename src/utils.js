@@ -1,13 +1,34 @@
+import textData from './textData'
+
 export default {
-    intercept (instance, fn) {
-        if (typeof fn === 'function') {
-            return fn(instance)
+    intercept (entity, interceptor) {
+        const isReq = (entity instanceof Request)
+
+        if (typeof interceptor === 'function') {
+            const result = interceptor(entity, this.getWritbleOptions(entity))
+
+            if (isReq && !(result instanceof Request)) {
+                throw new Error('[Error in beforeRequest]: returned value must be instance of Request')
+            }
+
+            return result
         } else {
-            return instance
+            return entity
         }
     },
 
-    checkStatus (res) {
+    getWritbleOptions (object) {
+        const writble = {}
+
+        for (let key in object) {
+            if (typeof object[key] === 'function') continue
+            writble[key] = object[key]
+        }
+
+        return writble
+    },
+
+    handleStatus (res) {
         if (res.status >= 200 && res.status < 300) {
             return Promise.resolve(res)
         } else {
@@ -19,11 +40,11 @@ export default {
         const isFull = /(https?:\/\/)/ig
         let url = ''
 
-        if (isFull.test(relativeURL)) url = relativeURL 
+        if (isFull.test(relativeURL)) url = relativeURL
         else url = baseURL + relativeURL
 
         if (params) url += `?${params}`
-        console.log(url)
+        // console.log(url)
         return url
     },
 
@@ -37,23 +58,31 @@ export default {
         )
     },
 
-    serializer (params, fn) {
-        if (typeof fn === 'function') {
-            return fn(params)
+    paramsSerializer (params, serilizer) {
+        if (typeof serilizer === 'function') {
+            return serilizer(params)
         } else {
             return JSON.stringify(params)
         }
     },
 
-    startTimeout (promise, timeout, message = 'Time is out!!') {
+    startTimeout (promise, timeout, controller) {
         timeout = Number(timeout)
-    
+
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                reject(message)
+                const error = new Error()
+
+                error.name = 'AbortError'
+                error.message = textData.errorMesssageOnAbort
+
+                if (controller) controller.abort()
+                else error.message = textData.errorMesssageOnTimeout
+
+                reject(error)
             }, timeout)
-    
+
             promise.then(resolve, reject)
         })
-    },
+    }
 }

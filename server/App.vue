@@ -1,54 +1,64 @@
 <template>
     <div id="app">
-        <input type="text" v-model="text">
-        <h1>{{ text }}</h1>
+        <form>
+            <input type="text" class="title" v-model="form.title">
+            <textarea class="body" v-model="form.body"></textarea>
+            <button class="send" @click="postPost" type="button">Send Post</button>
+        </form>
+        <article class="post" 
+            v-for="(post, i) in posts"
+            :key="i">
+            <h1>{{ post.title }}</h1>
+            <p>{{ post.body }}</p>
+        </article>
     </div>
 </template>
 
 <script>
-import lewy from '../src'
-
-const client = lewy.init({
-    baseURL: 'https://jsonplaceholder.typicode.com',
-    timeout: 10000,
-
-    paramSerializer (params) {
-        return '221342'
-    },
-
-    beforeResponse (res) {
-        console.log(res)
-        return res.json().then(data => data)
-    },
-
-    beforeRequest (req) {
-        console.log(req)
-        return req
-    },
-})
+import api from './api'
 
 export default {
     name: 'app',
     data () {
         return {
-            text: 'hello'
+            posts: [],
+            form: {
+                title: '',
+                body: ''
+            }
         }
     },
 
     methods: {
-        getDogs () {
-            client.request({
-                url: '/posts/1',
-                method: 'get',
-                params: {
-                    lol: 'asdf'
-                }
-            }).then(body => body)
+        getPosts () {
+            api.request({
+                url: '/posts',
+                method: 'get'
+            }).then(body => {
+                console.log(body)
+                this.posts = body.slice(0, 20)
+            })
+            .catch(err => console.error(err))
+
+        },
+
+        postPost () {
+            const data = this.form
+
+            api.request({
+                url: '/posts',
+                method: 'post',
+                body: JSON.stringify(data)
+            }).then(body => {
+                console.log(body)
+            })
+            .catch(err => console.error(err))
+
         }
     },
 
     created () {
-        this.getDogs()
+        this.getPosts()
     }
 }
 </script>
@@ -57,5 +67,26 @@ export default {
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     color: #2c3e50;
+    background-color: rgb(248, 172, 127);
+    background-image: linear-gradient(90deg, #FBAB7E 0%, #F7CE68 100%);
+
+
+}
+
+.post {
+    background-color: #08AEEA;
+    background-image: linear-gradient(45deg, #08AEEA 0%, #2AF598 100%);
+    border: 4px solid white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 25px;
+    max-width: 500px;
+    color: white
+}
+
+.post h1 {
+    color: white;
+    font-weight: bold;
+    text-align: center
 }
 </style>

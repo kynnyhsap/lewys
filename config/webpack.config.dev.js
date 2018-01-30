@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const path = require('path')
 
-const dir = 'server' 
+const dir = 'server'
 
 const devConfig = {
     entry: `./${dir}/main.js`,

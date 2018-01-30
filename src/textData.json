@@ -1,0 +1,4 @@
+{
+    "errorMesssageOnAbort": "The operation was aborted.",
+    "errorMesssageOnTimeout": "Time is out, but the operation wasn't aborted because your browser does not support AbortController API. Check out Browser compatibility https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+}

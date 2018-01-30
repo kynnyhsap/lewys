@@ -3,6 +3,7 @@ import utils from './utils'
 class Client {
     constructor (settings) {
         this.defaults = settings
+        this.controller = undefined
 
         if (!this.defaults.credentials) this.defaults.credentials = 'omit'
         if (!this.defaults.redirect) this.defaults.redirect = 'follow'
@@ -16,17 +17,22 @@ class Client {
         let { url, method, body, params, headers } = opts
         let { credentials, mode, redirect, cache } = opts
 
-        const serializedParams = utils.serializer(params, this.defaults.paramSerializer)
+        const serializedParams = utils.paramsSerializer(params, this.defaults.serializer)
         const URL = utils.constructURL(this.defaults.baseURL, url, serializedParams)
 
         if (utils.hasBody(method)) OPTIONS.body = body
+
+        if ('AbortController' in window) {
+            this.controller = new AbortController()
+            OPTIONS.signal = this.controller.signal
+        }
 
         OPTIONS.credentials = credentials || this.defaults.credentials
         OPTIONS.redirect = redirect || this.defaults.redirect
         OPTIONS.headers = new Headers(headers || this.defaults.headers)
         OPTIONS.cache = cache || this.defaults.cache
         OPTIONS.mode = mode || this.defaults.mode
-        OPTIONS.method = method
+        OPTIONS.method = method || 'GET'
 
         const request = utils.intercept(
             new Request(URL, OPTIONS),
@@ -34,8 +40,12 @@ class Client {
         )
 
         return utils
-            .startTimeout(fetch(request), this.defaults.timeout)
-            .then(utils.checkStatus)
+            .startTimeout(
+                fetch(request),
+                this.defaults.timeout,
+                this.controller
+            )
+            .then(utils.handleStatus)
             .then(response => utils.intercept(
                 response,
                 this.defaults.beforeResponse
