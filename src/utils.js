@@ -5,27 +5,14 @@ export default {
         const isReq = (entity instanceof Request)
 
         if (typeof interceptor === 'function') {
-            const result = interceptor(entity, this.getWritbleOptions(entity))
+            const result = interceptor(entity)
 
-            if (isReq && !(result instanceof Request)) {
-                throw new Error('[Error in beforeRequest]: returned value must be instance of Request')
-            }
+            if (isReq && !(result instanceof Request)) throw new Error(textData.errorMessageBeforeRequest)
 
             return result
         } else {
             return entity
         }
-    },
-
-    getWritbleOptions (object) {
-        const writble = {}
-
-        for (let key in object) {
-            if (typeof object[key] === 'function') continue
-            writble[key] = object[key]
-        }
-
-        return writble
     },
 
     handleStatus (res) {
