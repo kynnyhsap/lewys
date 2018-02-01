@@ -1,18 +1,10 @@
-import textData from './textData'
+import errors from './errors'
 
 export default {
     intercept (entity, interceptor) {
-        const isReq = (entity instanceof Request)
-
-        if (typeof interceptor === 'function') {
-            const result = interceptor(entity)
-
-            if (isReq && !(result instanceof Request)) throw new Error(textData.errorMessageBeforeRequest)
-
-            return result
-        } else {
-            return entity
-        }
+        return (typeof interceptor === 'function')
+            ? interceptor(entity)
+            : entity
     },
 
     handleStatus (res) {
@@ -50,20 +42,18 @@ export default {
     },
 
     startTimeout (promise, timeout, controller) {
-        timeout = Number(timeout)
-
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                const error = new Error()
+                const err = new Error()
 
-                error.name = 'AbortError'
-                error.message = textData.errorMesssageOnAbort
+                err.name = 'AbortError'
+                err.message = errors.OnAbort
 
                 if (controller) controller.abort()
-                else error.message = textData.errorMesssageOnTimeout
+                else err.message = errors.OnTimeout
 
-                reject(error)
-            }, timeout)
+                reject(err)
+            }, Number(timeout))
 
             promise.then(resolve, reject)
         })
