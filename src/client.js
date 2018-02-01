@@ -12,13 +12,8 @@ class Client {
         if (!this.defaults.mode) this.defaults.mode = 'cors'
     }
 
-    request (opts) {
+    request ({ url, method, body, params, headers, credentials, mode, redirect, cache }) {
         const OPTIONS = {}
-        let { url, method, body, params, headers } = opts
-        let { credentials, mode, redirect, cache } = opts
-
-        const serializedParams = utils.paramsSerializer(params, this.defaults.serializer)
-        const URL = utils.constructURL(this.defaults.baseURL, url, serializedParams)
 
         if (utils.hasBody(method)) OPTIONS.body = body
 
@@ -34,17 +29,23 @@ class Client {
         OPTIONS.mode = mode || this.defaults.mode
         OPTIONS.method = method || 'GET'
 
+        const URL = utils.constructURL({
+            base: this.defaults.baseURL,
+            relative: url,
+            params: utils.paramsSerializer(params, this.defaults.serializer)
+        })
+
         const request = utils.intercept(
             new Request(URL, OPTIONS),
             this.defaults.beforeRequest
         )
 
         return utils
-            .startTimeout(
-                fetch(request),
-                this.defaults.timeout,
-                this.controller
-            )
+            .startTimeout({
+                promise: fetch(request),
+                timeout: this.defaults.timeout,
+                controller: this.controller
+            })
             .then(utils.handleStatus)
             .then(response => utils.intercept(
                 response,

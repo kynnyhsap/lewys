@@ -1,4 +1,4 @@
-import errors from './errors'
+import errors from './errors.json'
 
 export default {
     intercept (entity, interceptor) {
@@ -11,18 +11,6 @@ export default {
         return (res.status >= 200 && res.status < 300)
             ? Promise.resolve(res)
             : Promise.reject(new Error(res.statusText))
-    },
-
-    constructURL (baseURL, relativeURL, params) {
-        const isFull = /(https?:\/\/)/ig
-        let url = ''
-
-        if (isFull.test(relativeURL)) url = relativeURL
-        else url = baseURL + relativeURL
-
-        if (params) url += `?${params}`
-        // console.log(url)
-        return url
     },
 
     hasBody (method) {
@@ -41,7 +29,19 @@ export default {
             : JSON.stringify(params)
     },
 
-    startTimeout (promise, timeout, controller) {
+    constructURL ({ base, relative, params }) {
+        console.log(base, relative, params)
+        let url = ''
+
+        if (/(https?:\/\/)/ig.test(relative)) url = relative
+        else url = base + relative
+        if (params) url += `?${params}`
+
+        return url
+    },
+
+    startTimeout ({ promise, timeout, controller }) {
+        console.log('lol')
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const err = new Error()
