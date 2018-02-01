@@ -16,11 +16,9 @@ export default {
     },
 
     handleStatus (res) {
-        if (res.status >= 200 && res.status < 300) {
-            return Promise.resolve(res)
-        } else {
-            return Promise.reject(new Error(res.statusText))
-        }
+        return (res.status >= 200 && res.status < 300)
+            ? Promise.resolve(res)
+            : Promise.reject(new Error(res.statusText))
     },
 
     constructURL (baseURL, relativeURL, params) {
@@ -46,11 +44,9 @@ export default {
     },
 
     paramsSerializer (params, serilizer) {
-        if (typeof serilizer === 'function') {
-            return serilizer(params)
-        } else {
-            return JSON.stringify(params)
-        }
+        return (typeof serilizer === 'function')
+            ? serilizer(params)
+            : JSON.stringify(params)
     },
 
     startTimeout (promise, timeout, controller) {
