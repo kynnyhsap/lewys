@@ -1,7 +1,3 @@
 import Client from './client'
 
-const lewys = {
-    init: (settings) => new Client(settings)
-}
-
-export default lewys
+export const init = (settings) => new Client(settings)
