@@ -7,8 +7,8 @@ Manage your api nice and easely with **Lewys** - Fetch "under the hood" client
 
 
 ## Fetures
-- [x] Make Fetch reqeusts
-- [x] [Intercept request and response](#)
+- [x] [Make Fetch reqeusts](#instance-request-method)
+- [x] [Intercept request and response](#before-response)
 - [x] [Aborting requests](#aborting-requests)
 - [x] Simple Promice API
 <!-- Make http requests from node.js -->
@@ -57,11 +57,6 @@ const client = lewys.init({ /* Initial Options */})
 | serializer | *function* | ✖ | [➡️](#serializer) |
 | beforeResponse | *function* | ✖ | [➡️](#before-response) |
 | beforeRequest | *function* | ✖ | [➡️](#before-request) |
-| mode | *string* | `'cors'` | [➡️](#instance-options) |
-| redirect | *string* | `'follow'` | [➡️](#instance-options) |
-| cache | *string* | `'default'` | [➡️](#instance-options) |
-| credentials | *string* | `'omit'` | [➡️](#instance-options) |
->Options like `mode`, `creditals`, `redirect` and `cache` is just like you use them in base `fetch()`
 
 You can also define those options after client initializing:
 ```js
@@ -172,17 +167,52 @@ lewys.init({
 
 
 
-## Instance methods
+## Instance Request method
 **lewys#request(options)** 
-> Only `url` property are required
+
+Examples:
+
 ```js
-client.request({
-    url: '/some/api/posts', // requeied
-    method: 'get', // unnesesary
-    params: { unnesesary: 'params field'}, // unnesesary
+const posts = client.request({
+    url: '/api/posts'
+    method: 'get',
+    params: { kek: 'lol' }
+})
+
+const createPost = client.request({
+    url: '/api/create/post'
+    method: 'post',
+    headers: { 'X-CUSTOM-HEADER': 'LOLOLOL' },
+    body: JSON.stringify({ title: 'new post', text: 'text' })
 })
 ```
-It return you a [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response/Response) promise by default, but you can intercept and handle it in [beforeResponse](#before-response)
+
+`Instance.request` method returns you a Fetch [Response](https://developer.mozilla.org/en-US/docs/Web/API/Response/Response) promise by default, but you can intercept and handle it in [beforeResponse](#before-response)
+
+
+
+### Request options
+> Only **`url`** property are required
+
+| Property | Description |
+| --- | --- |
+| **url** | Relative or absolute request URL |
+| **method** | Requst method. Default `'GET'` |
+| **params** | Request params. You can handle it in paramsSerializer |
+| **headers** | Additional request Headers |
+| **body** | Only for POST, PATCH and PUT |
+
+Also you can pass any options you want just like that:
+```js
+client.request({
+    url: '/some/api',
+
+    mode: 'origin',
+    creditals: 'omit'
+})
+```
+And they will be included to your Fetch [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request).
+
 
 
 
