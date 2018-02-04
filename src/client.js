@@ -1,6 +1,6 @@
 import utils from './utils'
 
-export default class Client {
+class Client {
     constructor (settings) {
         this.controller = undefined
         this.defaults = settings
@@ -19,10 +19,7 @@ export default class Client {
         const URL = utils.makeUrl({
             relative: url,
             base: this.defaults.baseURL,
-            params: utils.intercept(
-                params,
-                this.defaults.serializer || JSON.stringify
-            )
+            params: utils.intercept(params, this.defaults.serializer || JSON.stringify)
         })
 
         if ('AbortController' in window) {
@@ -41,10 +38,12 @@ export default class Client {
                 timeout: this.defaults.timeout,
                 controller: this.controller
             })
-            .then(this.defaults.statusHandler || utils.handleStatus)
+            .then(utils.handleStatus)
             .then(response => utils.intercept(
                 response,
                 this.defaults.beforeResponse
             ))
     }
 }
+
+export default Client
