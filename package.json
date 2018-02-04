@@ -1,8 +1,8 @@
 {
   "name": "lewys",
-  "version": "0.9.1",
+  "version": "1.0.0",
   "description": "Manage your api nice and easely with Lewys. Fetch 'under the hood' single point client.",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "sideEffects": false,
   "repository": "https://github.com/kwoosh/lewys.git",
   "author": "kwoosh <tobirawork@gmail.com>",
