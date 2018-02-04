@@ -33,9 +33,13 @@ export default {
         getPosts () {
             api.request({
                 url: '/posts',
-                method: 'get'
+                method: 'get',
+                mode: 'cors',
+                params: {
+                    kek: 'lol'
+                }
             }).then(body => {
-                console.log(body)
+                // console.log(body)
                 this.posts = body.slice(0, 20)
             })
             .catch(err => console.error(err))
@@ -50,7 +54,7 @@ export default {
                 method: 'post',
                 body: JSON.stringify(data)
             }).then(body => {
-                console.log(body)
+                // console.log(body)
             })
             .catch(err => console.error(err))
 
