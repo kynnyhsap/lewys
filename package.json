@@ -16,11 +16,12 @@
     "http"
   ],
   "scripts": {
-    "build": "webpack",
+    "build": "babel src --out-dir dist",
     "test": "jest",
     "test:watch": "jest --watch ./test/unit/*"
   },
   "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.39",
     "@babel/core": "^7.0.0-beta.39",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.39",
     "@babel/preset-env": "^7.0.0-beta.39",
