@@ -29,7 +29,7 @@ class Client {
         OPTIONS.mode = mode || this.defaults.mode
         OPTIONS.method = method || 'GET'
 
-        const URL = utils.constructURL({
+        const URL = utils.makeUrl({
             base: this.defaults.baseURL,
             relative: url,
             params: utils.paramsSerializer(params, this.defaults.serializer)

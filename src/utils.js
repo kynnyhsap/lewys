@@ -29,8 +29,7 @@ export default {
             : JSON.stringify(params)
     },
 
-    constructURL ({ base, relative, params }) {
-        console.log(base, relative, params)
+    makeUrl ({ base, relative, params }) {
         let url = ''
 
         if (/(https?:\/\/)/ig.test(relative)) url = relative
@@ -41,7 +40,6 @@ export default {
     },
 
     startTimeout ({ promise, timeout, controller }) {
-        console.log('lol')
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const err = new Error()
