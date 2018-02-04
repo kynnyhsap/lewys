@@ -1,18 +1,18 @@
 import utils from './utils'
 
-class Client {
+export default class Client {
     constructor (settings) {
-        this.defaults = settings
         this.controller = undefined
+        this.defaults = settings
 
         if (!this.defaults.timeout) this.defaults.timeout = 30000
     }
 
     request ({ url, method, body, params, headers, ...customOptions }) {
         const OPTIONS = {
+            method: method || 'GET',
             headers: new Headers(headers || this.defaults.headers),
             body: utils.hasBody(method) ? body : undefined,
-            method: method || 'GET',
             ...customOptions,
         }
 
@@ -41,12 +41,10 @@ class Client {
                 timeout: this.defaults.timeout,
                 controller: this.controller
             })
-            .then(utils.handleStatus)
+            .then(this.defaults.statusHandler || utils.handleStatus)
             .then(response => utils.intercept(
                 response,
                 this.defaults.beforeResponse
             ))
     }
 }
-
-export default Client
