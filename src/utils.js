@@ -23,12 +23,6 @@ export default {
         )
     },
 
-    paramsSerializer (params, serilizer) {
-        return (typeof serilizer === 'function')
-            ? serilizer(params)
-            : JSON.stringify(params)
-    },
-
     makeUrl ({ base, relative, params }) {
         let url = ''
 
