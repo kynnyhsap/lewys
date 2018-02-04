@@ -2,7 +2,8 @@
 
 
 
-Manage your api nice and easely with **Lewys** - Fetch "under the hood" client
+Manage your api nice and easely with **Lewys**.
+Fetch "under the hood" single point client.
 
 
 
@@ -155,7 +156,7 @@ lewys.init({
     },
 })
 ```
-Pay attention that [Request](https://developer.mozilla.org/en-US/docs/Web/API/Requeste) instance ,same to Response, can't be chaged, if you try - you will get error. It's readonly!!
+Pay attention that [Request](https://developer.mozilla.org/en-US/docs/Web/API/Requeste) instance, same to Response, can't be chaged, if you try - you will get error. It's readonly!!
 ```js
 lewys.init({
     beforeRequest (req) {
@@ -173,6 +174,10 @@ lewys.init({
 Examples:
 
 ```js
+const client = lewys.init({
+    baseURL: 'https://some.cool'
+})
+
 const posts = client.request({
     url: '/api/posts'
     method: 'get',
