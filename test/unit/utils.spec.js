@@ -21,9 +21,7 @@ describe('Utils', () => {
 
             expect.assertions(1)
 
-            return expect(utils.handleStatus(niceRes))
-                .resolves
-                .toEqual(niceRes)
+            return expect(utils.handleStatus(niceRes)).resolves.toEqual(niceRes)
         })
 
         it('sould reject if status is ivalid', () => {
@@ -32,9 +30,7 @@ describe('Utils', () => {
 
             expect.assertions(1)
 
-            return expect(utils.handleStatus(badRes))
-                .rejects
-                .toEqual(err)
+            return expect(utils.handleStatus(badRes)).rejects.toEqual(err)
         })
     })
 
@@ -44,13 +40,13 @@ describe('Utils', () => {
         const serializer = params => 'lol=kek'
 
         it('should handle params by custom serializer', () => {
-            expect(utils.intercept(params, serializer || JSON.stringify))
-                .toBe('lol=kek')
+            expect(utils.intercept(params, serializer || JSON.stringify)).toBe(
+                'lol=kek'
+            )
         })
 
         it('should return default stringified params', () => {
-            expect(utils.intercept(params, JSON.stringify))
-                .toBe(stringified)
+            expect(utils.intercept(params, JSON.stringify)).toBe(stringified)
         })
     })
 
@@ -89,7 +85,6 @@ describe('Utils', () => {
         })
     })
 
-
     describe.skip('startTimeout', () => {
         const err = new Error()
         err.name = 'AbortError'
@@ -104,13 +99,11 @@ describe('Utils', () => {
             const request = {
                 promise,
                 timeout: 5000,
-                controller: { abort: () => console.log('aborted') }
+                controller: { abort: () => console.log('aborted') },
             }
 
             expect.assertions(1)
-            return expect(utils.startTimeout(request))
-                .resolves
-                .toBe('done')
+            return expect(utils.startTimeout(request)).resolves.toBe('done')
         })
 
         it('should reject on abort', () => {
@@ -118,13 +111,11 @@ describe('Utils', () => {
             const request = {
                 promise,
                 timeout: 1000,
-                controller: { abort: () => console.log('aborted') }
+                controller: { abort: () => console.log('aborted') },
             }
 
             expect.assertions(1)
-            return expect(utils.startTimeout(request))
-                .rejects
-                .toEqual(err)
+            return expect(utils.startTimeout(request)).rejects.toEqual(err)
         })
 
         it('should reject on timeout', () => {
@@ -132,13 +123,11 @@ describe('Utils', () => {
             const request = {
                 promise,
                 timeout: 1000,
-                controller: undefined
+                controller: undefined,
             }
 
             expect.assertions(1)
-            return expect(utils.startTimeout(request))
-                .rejects
-                .toEqual(err)
+            return expect(utils.startTimeout(request)).rejects.toEqual(err)
         })
     })
 })
