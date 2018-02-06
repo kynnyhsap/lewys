@@ -1,8 +1,8 @@
 import utils from './utils'
 
 class Client {
-    constructor(settings) {
-        this.defaults = settings || {}
+    constructor(settings = {}) {
+        this.defaults = settings
 
         if (!this.defaults.timeout) this.defaults.timeout = 30000
     }
