@@ -1,39 +1,33 @@
 import errors from './errors.json'
 
 export default {
-    intercept (entity, interceptor) {
-        return (typeof interceptor === 'function')
-            ? interceptor(entity)
-            : entity
+    intercept(entity, interceptor) {
+        return typeof interceptor === 'function' ? interceptor(entity) : entity
     },
 
-    handleStatus (res) {
-        return (res.status >= 200 && res.status < 300)
+    handleStatus(res) {
+        return res.status >= 200 && res.status < 300
             ? Promise.resolve(res)
             : Promise.reject(new Error(res.statusText))
     },
 
-    hasBody (method) {
+    hasBody(method) {
         method = method.toUpperCase()
 
-        return (
-            method === 'POST' ||
-            method === 'PUT' ||
-            method === 'PATCH'
-        )
+        return method === 'POST' || method === 'PUT' || method === 'PATCH'
     },
 
-    makeUrl ({ base, relative, params }) {
+    makeUrl({ base, relative, params }) {
         let url = ''
 
-        if (/(https?:\/\/)/ig.test(relative)) url = relative
+        if (/(https?:\/\/)/gi.test(relative)) url = relative
         else url = base + relative
         if (params) url += `?${params}`
 
         return url
     },
 
-    startTimeout ({ promise, timeout, controller }) {
+    startTimeout({ promise, timeout, controller }) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 const err = new Error()
@@ -49,5 +43,5 @@ export default {
 
             promise.then(resolve, reject)
         })
-    }
+    },
 }
