@@ -7,4 +7,13 @@ module.exports = {
     trailingComma: 'es5',
     bracketSpacing: true,
     arrowParens: 'avoid',
+    overrides: [
+        {
+            files: 'package.json',
+            options: {
+                printWidth: 150,
+                tabWidth: 2,
+            },
+        },
+    ],
 }

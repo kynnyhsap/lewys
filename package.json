@@ -8,13 +8,7 @@
   "author": "kwoosh <tobirawork@gmail.com>",
   "license": "MIT",
   "private": false,
-  "keywords": [
-    "fetch",
-    "promise",
-    "client",
-    "https",
-    "http"
-  ],
+  "keywords": ["fetch", "promise", "client", "https", "http"],
   "scripts": {
     "build": "babel src --out-dir dist",
     "test": "jest",
